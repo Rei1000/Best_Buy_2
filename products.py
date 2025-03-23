@@ -13,7 +13,7 @@ class Product:
             raise Exception("Price must be greater than 0.")
 
         #check for int and greater than 0
-        if not isinstance(quantity, int) or quantity <= 0:
+        if not isinstance(quantity, int) or quantity < 0:
             raise Exception("Quantity must be a non-negative integer.")
 
 
