@@ -48,6 +48,10 @@ class Product:
         """Return the current quantity of the product."""
         return self.quantity
 
+    def is_active(self):
+        """Return True if the product is active, otherwise False."""
+        return self.active
+
 
     def show(self):
         """Return a string that shows the product details."""
