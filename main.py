@@ -1,13 +1,13 @@
 from products import Product
-bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+from store import Store
 mac = Product("MacBook Air M2", price=1450, quantity=100)
+bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+samsung = Product("Samsung Galaxy Buds", price=120, quantity=700)
 
-print(bose.buy(50))
-print(mac.buy(100))
-print(mac.is_active())
+store = Store([mac, bose])
+store.add_product(samsung)
+store.remove_product(bose)
 
-bose.show()
-mac.show()
-
-bose.set_quantity(1000)
-bose.show()
+print("Total quantity:", store.get_total_quantity())
+print("Active products:", [p.name for p in store.get_all_products()])
+print("Total order price:", store.order([(mac, 1), (samsung, 2)]))

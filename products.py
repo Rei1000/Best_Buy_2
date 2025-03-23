@@ -4,17 +4,18 @@ class Product:
     def __init__(self, name, price=0.0, quantity=0): #Constructor
         """Create a new product and check if the values are valid"""
 
+        # check for string and not empty
         if not isinstance(name, str) or not name.strip():
             raise Exception("Name must be a non-empty string.")
-        # check for string and not empty
 
+        # check for int or float and greater than 0
         if not isinstance(price, (int, float)) or price <= 0:
             raise Exception("Price must be greater than 0.")
-        # check for int or float and greater than 0
 
+        #check for int and greater than 0
         if not isinstance(quantity, int) or quantity <= 0:
             raise Exception("Quantity must be a non-negative integer.")
-        #check for int and greater than 0
+
 
         self.name = name
         self.price = price
@@ -25,9 +26,10 @@ class Product:
     def set_quantity(self, quantity):
         """Set a new quantity for the product. Deactivate it if quantity is 0."""
 
+        # check for int greater than 0
         if not isinstance(quantity, int) or quantity < 0:
             raise Exception("Quantity must be a non-negative integer.")
-        # check for int greater than 0
+
 
         self.quantity = quantity
 
@@ -61,18 +63,18 @@ class Product:
     def buy(self,quantity):
         """Buy a number of items. Update stock and return total price."""
 
+        # Check if requested quantity is a positive number
         if not isinstance(quantity, int) or quantity <= 0:
             raise Exception("Quantity to buy must be bigger than 0")
-        # Check if requested quantity is a positive number
 
+        # Check if enough items are in stock
         if quantity > self.quantity:
-            # Check if enough items are in stock
             raise Exception("Not enough parts in stock to complete purchase.")
 
-        self.quantity -= quantity
         # Subtract bought quantity
+        self.quantity -= quantity
 
+        # Deactivate product if quantity becomes 0
         if self.quantity == 0:
             self.active = False
-            # Deactivate product if quantity becomes 0
         return quantity * self.price
