@@ -1,0 +1,2 @@
+# This project does not require any external Python packages.
+# requirements.txt generated on 2025-03-24
