@@ -8,7 +8,11 @@ product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
 best_buy = Store(product_list)
 
 def start(store):
-    """ shows meue with options 1-4 to view products, total quantity make order or quit."""
+    """
+    Start the store program.
+    Shows a menu with options to view products, total quantity,
+    make an order, or quit the program.
+    """
     while True:
         print("\nPlease choose an option:")
         print("1. List of all products in the store")
@@ -41,12 +45,14 @@ def start(store):
                     planned_quantities[prod] = planned_quantities.get(prod, 0) + qty
 
                 # Show all active products with index
-                active_products = [p for p in store.get_all_products() if p.get_quantity() > 0]
+                active_products = [p for p in store.get_all_products()
+                                   if p.get_quantity() > 0]
                 print("\nAvailable products:")
                 for index, product in enumerate(active_products):
                     planned = planned_quantities.get(product, 0)
                     available = product.get_quantity() - planned
-                    print(f"{index}. {product.name} (Quantity available: {available}, Active: {product.is_active()})")
+                    print(f"{index}. {product.name} (Quantity available: {available}, "
+                          f"Active: {product.is_active()})")
 
                 # choose product index
                 index_input = input("Enter the product number you want to order (or 'q' to cancel): ").strip()
@@ -58,7 +64,8 @@ def start(store):
                     continue
 
                 index = int(index_input)
-                if index < 0 or index >= len(active_products) or not active_products[index].is_active() and active_products[index].get_quantity() > 0:
+                if index < 0 or index >= len(active_products) or not active_products[index].is_active() and \
+                   active_products[index].get_quantity() > 0:
                     print("Product index out of range or inactive.")
                     continue
 
@@ -79,7 +86,8 @@ def start(store):
 
                     planned = planned_quantities.get(selected_product, 0)
                     available = selected_product.get_quantity() - planned
-                    quantity_input = input(f"Enter quantity for {selected_product.name} (or 'q' to cancel): ").strip()
+                    quantity_input = input(f"Enter quantity for {selected_product.name} "
+                                           f"(or 'q' to cancel): ").strip()
                     if quantity_input.lower() == "q":
                         print("Order cancelled.")
                         return
@@ -90,13 +98,13 @@ def start(store):
                     quantity = int(quantity_input)
 
                     if quantity > available:
-                        print(f"Not enough quantity in stock. Maximum available is {available}. Please enter a smaller amount.")
+                        print(f"Not enough quantity in stock. Maximum available is {available}. "
+                              f"Please enter a smaller amount.")
                         continue
 
                     break  # valid quantity
 
                 order_list.append((selected_product, quantity))
-                #selected_product.quantity -= quantity  # Update the product quantity
 
                 # Ask if the user wants to add another product
                 another_product = input("Would you like to add another product? (y/n): ").strip().lower()
@@ -108,11 +116,12 @@ def start(store):
                         print(f"{'Product':30} {'Unit Price':>12} {'Quantity':>10} {'Subtotal':>12}")
                         for product, quantity in order_list:
                             subtotal = product.price * quantity
-                            print(f"{product.name:30} {product.price:12} €{quantity:10} {subtotal:12} €")
+                            print(f"{product.name:30} {product.price:12} €{quantity:10} "
+                                  f"{subtotal:12} €")
                         print("-" * 70)
                         print(f"{'Total':>54} {total:12} €")
                     except Exception as e:
-                        print("Order failed:", e)
+                        raise Exception("Order failed") from e
                     break
 
         elif choice == "4":
@@ -121,6 +130,10 @@ def start(store):
 
 
 if __name__ == "__main__":
+    """ 
+    Main entry point of the program. 
+    Starts the store program and handles keyboard interruption.
+    """
     try:
         start(best_buy)
     except KeyboardInterrupt:
