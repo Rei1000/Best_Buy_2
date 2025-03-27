@@ -1,0 +1,12 @@
+# Virtuelle Umgebungen
+venv/
+
+# PyCharm
+.idea/
+
+# Bytecode-Dateien
+__pycache__/
+*.pyc
+
+# Sonstiges
+*.log

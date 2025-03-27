@@ -39,7 +39,7 @@ class Product:
 
     def activate(self):
         """Set the product as active."""
-        return self.active
+        self.active = True
 
     def deactivate(self):
         """Set the product as not active."""
