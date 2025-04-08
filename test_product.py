@@ -1,5 +1,5 @@
 import pytest
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
 
 def test_creating_product():
     product = Product("MacBook", price=1450, quantity=100)
@@ -55,3 +55,94 @@ def test_buying_more_than_available_raises_exception():
 
     with pytest.raises(Exception):
         product.buy(10)
+
+
+# Tests für NonStockedProduct
+def test_creating_non_stocked_product():
+    """
+    Test that a NonStockedProduct can be created with valid parameters.
+    """
+    product = NonStockedProduct("Windows License", price=200)
+    assert product.name == "Windows License"
+    assert product.price == 200
+    assert product.quantity == 0
+    assert product.active  # NonStockedProduct sollte immer aktiv sein
+
+
+def test_non_stocked_product_always_active():
+    """
+    Test that a NonStockedProduct remains active even when quantity is 0.
+    """
+    product = NonStockedProduct("Windows License", price=200)
+    assert product.active  # Initial aktiv
+    
+    # Versuche, die Menge zu ändern (sollte keine Auswirkung haben)
+    product.set_quantity(10)
+    assert product.quantity == 0  # Menge sollte immer 0 bleiben
+    assert product.active  # Sollte immer noch aktiv sein
+
+
+def test_non_stocked_product_can_be_bought():
+    """
+    Test that a NonStockedProduct can be bought even when quantity is 0.
+    """
+    product = NonStockedProduct("Windows License", price=200)
+    total_price = product.buy(5)  # Kauft 5 Lizenzen
+    
+    assert total_price == 1000  # 5 * 200
+    assert product.quantity == 0  # Menge sollte immer 0 bleiben
+    assert product.active  # Sollte immer noch aktiv sein
+
+
+# Tests für LimitedProduct
+def test_creating_limited_product():
+    """
+    Test that a LimitedProduct can be created with valid parameters.
+    """
+    product = LimitedProduct("Shipping", price=10, quantity=5, maximum=1)
+    assert product.name == "Shipping"
+    assert product.price == 10
+    assert product.quantity == 5
+    assert product.maximum == 1
+    assert product.active
+
+
+def test_limited_product_respects_maximum():
+    """
+    Test that a LimitedProduct cannot be bought in quantities exceeding the maximum.
+    """
+    product = LimitedProduct("Shipping", price=10, quantity=5, maximum=1)
+    
+    # Kaufen innerhalb des Limits sollte funktionieren
+    total_price = product.buy(1)
+    assert total_price == 10
+    assert product.quantity == 4
+    
+    # Kaufen über dem Limit sollte eine Exception auslösen
+    with pytest.raises(Exception):
+        product.buy(2)
+
+
+def test_limited_product_becomes_inactive_when_out_of_stock():
+    """
+    Test that a LimitedProduct becomes inactive when out of stock.
+    """
+    product = LimitedProduct("Shipping", price=10, quantity=1, maximum=1)
+    product.buy(1)
+    
+    assert product.quantity == 0
+    assert not product.active  # Sollte inaktiv sein, wenn Menge 0 ist
+
+
+def test_limited_product_show_method():
+    """
+    Test that the show method of LimitedProduct includes the maximum information.
+    """
+    product = LimitedProduct("Shipping", price=10, quantity=5, maximum=1)
+    show_output = product.show()
+    
+    assert "Shipping" in show_output
+    assert "Price: 10" in show_output
+    assert "Quantity: 5" in show_output
+    assert "Max per order: 1" in show_output
+    assert "Active: True" in show_output

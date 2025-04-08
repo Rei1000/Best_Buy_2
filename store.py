@@ -61,4 +61,5 @@ class Store:
                 total += product.buy(quantity)
             except Exception as e:
                 raise Exception(f"Error ordering product {product.name}: {e}") from e
+            print(f"DEBUG: {product.name} | quantity: {product.quantity} | active: {product.active}")
         return total
