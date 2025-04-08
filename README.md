@@ -13,6 +13,9 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
 - buy()-Methode reduziert Lagerbestand
 - Automatische Deaktivierung bei Menge = 0
 - Formatierte Ausgabe über show()
+  Spezielle Produkttypen:
+  - NonStockedProduct: Kann auch bei einem Bestand von 0 bestellt werden, da sie nicht lagerbestandsgeführt werden
+  - LimitedProduct: Kann nur in begrenzter Menge pro Bestellung bestellt werden (z.B. Shipping: maximal 1 pro Bestellung, obwohl 5 im Bestand)
 
 ### Store-Klasse
 - Verwaltung einer Produktliste
@@ -23,6 +26,7 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
   - get_all_products()
   - order() zur Bestellverarbeitung
 - Lagerprüfung und Gesamtsummenberechnung
+- Berücksichtigung von Produkttypen bei der Bestellung (z.B. NonStockedProduct, LimitedProduct)
 
 ### main.py Benutzeroberfläche
 #### Menüoptionen:
@@ -114,6 +118,8 @@ A console-based shopping application to manage a small store with products, orde
 - buy() method to reduce stock
 - Automatic deactivation when quantity = 0
 - Formatted output via show()
+ - NonStockedProduct: Can be ordered even with a quantity of 0, as they are not stock-tracked
+  - LimitedProduct: Can only be ordered in limited quantities per order (e.g., Shipping: maximum 1 per order, although 5 in stock)
 
 ### Store Class
 - Manages a list of products
@@ -124,6 +130,7 @@ A console-based shopping application to manage a small store with products, orde
   - get_all_products()
   - order() to process orders
 - Stock check and total price calculation
+- Consideration of product types during ordering (e.g., NonStockedProduct, LimitedProduct)
 
 ### main.py Interface
 #### Menu Options:
