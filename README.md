@@ -13,6 +13,12 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
 - buy()-Methode reduziert Lagerbestand
 - Automatische Deaktivierung bei Menge = 0
 - Formatierte Ausgabe über show()
+- Unterstützt drei Promotion-Typen:
+  - Prozentualer Rabatt (z. B. 30 %)
+  - Zweites Produkt zum halben Preis
+  - "3 für 2"-Aktion
+- Promotions werden korrekt bei Bestellungen berücksichtigt
+- Promotions können pro Produkt gesetzt und gewechselt werden
   Spezielle Produkttypen:
   - NonStockedProduct: Kann auch bei einem Bestand von 0 bestellt werden, da sie nicht lagerbestandsgeführt werden
   - LimitedProduct: Kann nur in begrenzter Menge pro Bestellung bestellt werden (z.B. Shipping: maximal 1 pro Bestellung, obwohl 5 im Bestand)
@@ -27,6 +33,7 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
   - order() zur Bestellverarbeitung
 - Lagerprüfung und Gesamtsummenberechnung
 - Berücksichtigung von Produkttypen bei der Bestellung (z.B. NonStockedProduct, LimitedProduct)
+- Berücksichtigt Promotions bei der Preisberechnung pro Produkt
 
 ### main.py Benutzeroberfläche
 #### Menüoptionen:
@@ -42,6 +49,8 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
 - "q" zum Abbrechen an jeder Stelle
 - Rückkehr ins Hauptmenü nach jeder Aktion
 - Formatierte Quittung für Bestellungen
+- Zeigt vorhandene Promotions bei jedem Produkt
+- Berechnet Rabatte dynamisch je nach Aktionstyp
 
 ---
 
@@ -67,7 +76,10 @@ Eine Konsolenanwendung zur Verwaltung eines kleinen Stores mit Produkten, Bestel
 Best_Buy/
 ├── main.py
 ├── products.py
+├── promotions.py
 ├── store.py
+├── test_product.py
+├── requirements.txt
 ├── README.md
 └── .gitignore
 ```
@@ -83,17 +95,13 @@ python main.py
 
 ## Beispielausgabe (gekürzt)
 ```
-Bitte wählen Sie eine Option:
-1. Alle Produkte im Store anzeigen
-2. Gesamtmenge im Store anzeigen
-3. Bestellung durchführen
-4. Beenden
-...
 Bestellung erfolgreich! Zusammenfassung:
 Produkt                        Stückpreis   Menge     Zwischensumme
-MacBook Air M2                    1450 €        1       1450 €
+MacBook Air M2 (Second one half price)      1450 €        2       2175 €
+Bose Earbuds (3 für 2 Aktion)                250 €        3        500 €
+Windows License (30% off!)                  200 €        1        140 €
 --------------------------------------------------------------
-Gesamt                                              1450 €
+Gesamt                                               2815 €
 ```
 
 ---
@@ -118,6 +126,12 @@ A console-based shopping application to manage a small store with products, orde
 - buy() method to reduce stock
 - Automatic deactivation when quantity = 0
 - Formatted output via show()
+- Supports three promotion types:
+  - Percentage discount (e.g. 30%)
+  - Second item at half price
+  - "3 for 2" deal
+- Promotions are correctly applied when placing orders
+- Promotions can be assigned per product and changed
  - NonStockedProduct: Can be ordered even with a quantity of 0, as they are not stock-tracked
   - LimitedProduct: Can only be ordered in limited quantities per order (e.g., Shipping: maximum 1 per order, although 5 in stock)
 
@@ -130,7 +144,7 @@ A console-based shopping application to manage a small store with products, orde
   - get_all_products()
   - order() to process orders
 - Stock check and total price calculation
-- Consideration of product types during ordering (e.g., NonStockedProduct, LimitedProduct)
+- Applies product-specific promotions when calculating totals
 
 ### main.py Interface
 #### Menu Options:
@@ -146,6 +160,8 @@ A console-based shopping application to manage a small store with products, orde
 - Use "q" to cancel anytime
 - Returns to main menu after each action
 - Formatted receipt after each order
+- Displays promotions next to products
+- Calculates discounts live based on promotion type
 
 ---
 
@@ -171,7 +187,10 @@ A console-based shopping application to manage a small store with products, orde
 Best_Buy/
 ├── main.py
 ├── products.py
+├── promotions.py
 ├── store.py
+├── test_product.py
+├── requirements.txt
 ├── README.md
 └── .gitignore
 ```
@@ -187,17 +206,13 @@ python main.py
 
 ## Sample Output (shortened)
 ```
-Please choose an option:
-1. List of all products in the store
-2. Show total amount in store
-3. Make an order
-4. Quit
-...
 Order successful! Summary:
 Product                        Unit Price   Quantity     Subtotal
-MacBook Air M2                    1450 €        1       1450 €
+MacBook Air M2 (Second one half price)      1450 €        2       2175 €
+Bose Earbuds (3 for 2 deal)                 250 €         3        500 €
+Windows License (30% off!)                  200 €         1        140 €
 --------------------------------------------------------------
-Total                                              1450 €
+Total                                               2815 €
 ```
 
 ---

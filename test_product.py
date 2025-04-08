@@ -1,7 +1,15 @@
+"""
+Unit tests for all product types and promotions in the Best Buy 2 project.
+Includes tests for core product functionality, special product types, and promotion logic.
+"""
 import pytest
 from products import Product, NonStockedProduct, LimitedProduct
+from promotions import PercentDiscount, SecondHalfPrice, ThirdOneFree
 
 def test_creating_product():
+    """
+    Test that a Product can be created with valid parameters.
+    """
     product = Product("MacBook", price=1450, quantity=100)
     assert product.name == "MacBook"
     assert product.price == 1450
@@ -146,3 +154,41 @@ def test_limited_product_show_method():
     assert "Quantity: 5" in show_output
     assert "Max per order: 1" in show_output
     assert "Active: True" in show_output
+
+
+def test_second_half_price_promotion():
+    """
+    Test that the SecondHalfPrice promotion applies 50% discount to every second item.
+    Buying 2 should result in price for 1.5 items.
+    """
+    product = Product("MacBook Air M2", price=1000, quantity=10)
+    promotion = SecondHalfPrice("Second Half price!")
+    product.set_promotion(promotion)
+
+    total = product.buy(2)
+    assert total == 1500  # 1 full + 1 half = 1000 + 500
+
+
+def test_third_one_free_promotion():
+    """
+    Test that the ThirdOneFree promotion gives every third item for free.
+    Buying 3 should result in price for 2 items.
+    """
+    product = Product("Bose Earbuds", price=300, quantity=10)
+    promotion = ThirdOneFree("Third One Free!")
+    product.set_promotion(promotion)
+
+    total = product.buy(3)
+    assert total == 600  # 2 paid, 1 free
+
+
+def test_percent_discount_promotion():
+    """
+    Test that the PercentDiscount promotion correctly reduces the total price by the given percentage.
+    """
+    product = NonStockedProduct("Windows License", price=200)
+    promotion = PercentDiscount("30% off!", percent=30)
+    product.set_promotion(promotion)
+
+    total = product.buy(1)
+    assert total == 140.0  # 200 - 30% = 140

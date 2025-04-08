@@ -1,12 +1,21 @@
 # Virtuelle Umgebungen
 venv/
+.env/
 
-# PyCharm
+# PyCharm / Cursor / VS Code
 .idea/
+.vscode/
 
 # Bytecode-Dateien
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# macOS-Dateien
+.DS_Store
+
+# pytest Cache
+.pytest_cache/
 
 # Sonstiges
 *.log

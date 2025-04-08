@@ -20,6 +20,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None  # New attribute
 
     def buy(self, amount: int) -> float:
         """
@@ -35,6 +36,8 @@ class Product:
         self.quantity -= amount
         if self.quantity == 0 and not isinstance(self, NonStockedProduct):
             self.active = False
+        if self.promotion:
+            return self.promotion.apply_promotion(self, amount)
         return self.price * amount
 
     def set_quantity(self, quantity: int) -> None:
@@ -58,7 +61,8 @@ class Product:
         self.active = True
 
     def show(self):
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Active: {self.active}"
+        promo_info = f", Promotion: {self.promotion.name}" if self.promotion else ""
+        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Active: {self.active}{promo_info}"
 
     def is_active(self):
         return self.active
@@ -67,10 +71,15 @@ class Product:
         """Return the current quantity of the product."""
         return self.quantity
 
+    def set_promotion(self, promotion):
+        """Assign a promotion to the product."""
+        self.promotion = promotion
+
 
 class NonStockedProduct(Product):
-
-    """A product that does not require stock tracking (e.g. digital license)-"""
+    """A product that does not require stock tracking (e.g. digital license).
+    Always available and quantity is fixed at 0.
+    """
     def __init__(self, name, price):
         super().__init__(name, price, quantity=0)
         self.active = True # Always active, even if quantity is 0
@@ -78,21 +87,35 @@ class NonStockedProduct(Product):
     def set_quantity(self, quantity):
         self.quantity = 0 # Always zero, can not be changed
 
-    def buy(self, quantity):
-        if not isinstance(quantity, int) or quantity <= 0:
-            raise Exception("Quantity must be a positive integer.")
-        return quantity * self.price
+    def buy(self, amount: int) -> float:
+        """
+        Purchase a non-stocked product. Always available in any quantity.
+
+        :param amount: number of items to buy
+        :return: total price with or without promotion
+        """
+        if self.promotion:
+            return self.promotion.apply_promotion(self, amount)
+        return self.price * amount
 
 
 class LimitedProduct(Product):
-    """A product that can only be purchased in limited quantity per order"""
+    """A product that limits how many units can be purchased per order.
+    Inherits from Product and enforces a maximum purchase limit.
+    """
 
     def __init__(self, name, price, quantity, maximum):
         super().__init__(name, price, quantity)
         self.maximum = maximum # max quantity per purchase
 
     def buy(self, quantity):
-        """Limit quantity per purchase."""
+        """
+        Purchase a product with a maximum limit per order.
+
+        :param quantity: number of items to buy
+        :return: total price (may include promotion)
+        :raises Exception: if quantity exceeds the maximum allowed
+        """
         if quantity > self.maximum:
             raise Exception(f"Cannot buy more than {self.maximum} of this product")
         return super().buy(quantity)

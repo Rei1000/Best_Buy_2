@@ -1,5 +1,7 @@
 from products import Product, LimitedProduct, NonStockedProduct
 from store import Store
+from promotions import PercentDiscount, SecondHalfPrice, ThirdOneFree
+
 # setup initial stock of inventory
 product_list = [
     Product("MacBook Air M2", price=1450, quantity=100),
@@ -8,13 +10,22 @@ product_list = [
     NonStockedProduct("Windows License", price=200),
     LimitedProduct("Shipping", price=10, quantity=5, maximum=1)  # ← dein Testfall
 ]
+
+# Assign promotions to some products
+product_list[0].set_promotion(PercentDiscount("20% off", percent=20))          # MacBook Air M2
+product_list[1].set_promotion(SecondHalfPrice("Second one half price"))        # Bose Earbuds
+product_list[2].set_promotion(ThirdOneFree("3 für 2 Aktion"))                  # Pixel 7
+
 best_buy = Store(product_list)
 
 def start(store):
     """
-    Start the store program.
-    Shows a menu with options to view products, total quantity,
-    make an order, or quit the program.
+    Starts the interactive Best Buy store program.
+    Displays a menu with options to:
+    1. List all products
+    2. Show total quantity in the store
+    3. Make a purchase
+    4. Quit the application
     """
     while True:
         print("\nPlease choose an option:")
@@ -32,10 +43,7 @@ def start(store):
         if choice == "1":
             # show all products including inactive ones
             for index, product in enumerate(store.products, start=1):
-                available = product.get_quantity()
-                active_status = "True" if product.is_active() else "False"
-                print(f"{index}. {product.name} (Quantity available: {available}, "
-                      f"Active: {active_status})")
+                print(f"{index}. {product.show()}")
 
         elif choice == "2":
             # Display total quantity of all products
@@ -65,8 +73,8 @@ def start(store):
                         else:
                             product.activate()
 
-                    print(f"{index}. {product.name} (Quantity available: {available}, "
-                          f"Active: {product.is_active()}))")
+                    promotion_info = f", Promotion: {product.promotion.name}" if product.promotion else ""
+                    print(f"{index}. {product.name} (Quantity available: {available}, Active: {product.is_active()}{promotion_info})")
 
                 # choose product index
                 index_input = input("Enter the product number you want to order (or 'q' to cancel): ").strip()
@@ -149,7 +157,7 @@ def start(store):
                         print("\nOrder successful! Summary:")
                         print(f"{'Product':30} {'Unit Price':>12} {'Quantity':>10} {'Subtotal':>12}")
                         for product, quantity in order_list:
-                            subtotal = product.price * quantity
+                            subtotal = product.promotion.apply_promotion(product, quantity) if product.promotion else product.price * quantity
                             print(f"{product.name:30} {product.price:12} €{quantity:10} "
                                   f"{subtotal:12} €")
                         print("-" * 70)
@@ -165,8 +173,8 @@ def start(store):
 
 if __name__ == "__main__":
     """ 
-    Main entry point of the program. 
-    Starts the store program and handles keyboard interruption.
+    Main entry point of the Best Buy application.
+    Initializes the store and handles clean exit on keyboard interruption.
     """
     try:
         start(best_buy)
