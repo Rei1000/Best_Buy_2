@@ -155,13 +155,14 @@ def start(store):
                                 else:
                                     product.activate()
                         print("\nOrder successful! Summary:")
-                        print(f"{'Product':30} {'Unit Price':>12} {'Quantity':>10} {'Subtotal':>12}")
+                        print(f"{'Product':30} {'Unit Price':>12} {'Quantity':>10} {'Discount':>12} {'Subtotal':>12}")
                         for product, quantity in order_list:
-                            subtotal = product.promotion.apply_promotion(product, quantity) if product.promotion else product.price * quantity
-                            print(f"{product.name:30} {product.price:12} €{quantity:10} "
-                                  f"{subtotal:12} €")
-                        print("-" * 70)
-                        print(f"{'Total':>54} {total:12} €")
+                            original_total = product.price * quantity
+                            discounted_total = product.promotion.apply_promotion(product, quantity) if product.promotion else original_total
+                            discount_value = original_total - discounted_total
+                            print(f"{product.name:30} {product.price:12} €{quantity:10} {discount_value:12.2f} €{discounted_total:12.2f} €")
+                        print("-" * 85)
+                        print(f"{'Total':>66} {total:12.2f} €")
                     except Exception as e:
                         raise Exception("Order failed") from e
                     break
